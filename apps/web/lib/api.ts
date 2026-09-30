@@ -101,6 +101,27 @@ export const TIMEOUT_MESSAGE =
  */
 const DEFAULT_REQUEST_TIMEOUT_MS = 60_000;
 
+/**
+ * A host that suspends when idle answers the first request after a quiet
+ * period with a gateway error until the instance has finished starting. Those
+ * reads are safe to repeat, so they are retried a small, bounded number of
+ * times, which turns a cold start into a slow page rather than a broken one.
+ *
+ * Only idempotent reads are retried. A repeated POST could create a duplicate
+ * advisory, notification, or upload, so a write is surfaced as failed and the
+ * user decides whether to submit again.
+ */
+const COLD_START_RETRY_DELAYS_MS = [6_000, 15_000];
+const RETRYABLE_STATUSES = new Set([502, 503, 504]);
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isIdempotentRead(init: TimedRequestInit): boolean {
+  return (init.method ?? "GET").toUpperCase() === "GET";
+}
+
 function defaultMessageFor(status: number): string {
   if (status === 502 || status === 503 || status === 504) return BACKEND_UNREACHABLE_MESSAGE;
   if (status === 429) return "Too many attempts. Please wait a minute and try again.";
@@ -192,6 +213,18 @@ export async function apiFetch<T = unknown>(path: string, options: RequestOption
     if (newToken) {
       headers.set("Authorization", `Bearer ${newToken}`);
       response = await request(path, { ...init, headers, timeoutMs });
+    }
+  }
+
+  if (isIdempotentRead(init) && RETRYABLE_STATUSES.has(response.status)) {
+    for (const delay of COLD_START_RETRY_DELAYS_MS) {
+      await sleep(delay);
+      const retried = await request(path, { ...init, headers, timeoutMs });
+      if (!RETRYABLE_STATUSES.has(retried.status)) {
+        response = retried;
+        break;
+      }
+      response = retried;
     }
   }
 
