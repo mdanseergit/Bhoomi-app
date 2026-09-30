@@ -10,6 +10,10 @@ BHOOMI turns a farmer's own field records into a single, explainable picture:
 what the crop is likely to face, what the soil and weather records actually
 support, and which actions are worth taking next.
 
+<br />
+
+**Try it:** [bhoomi-app-in.vercel.app/login](https://bhoomi-app-in.vercel.app/login) — deployed on Vercel
+
 </div>
 
 ---
@@ -226,10 +230,12 @@ provider chain locally.
 │       ├── components/     UI components
 │       └── lib/            API client, types, i18n, contexts
 ├── assets/                 Logo and imagery
-└── docs/                   Data provider references
+└── docs/                   Deployment and data provider references
 ```
 
 ## Deployment
+
+Live instance: **[bhoomi-app-in.vercel.app](https://bhoomi-app-in.vercel.app/login)**
 
 | Component | Platform | Config |
 | --- | --- | --- |
