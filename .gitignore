@@ -1,0 +1,66 @@
+# Environment / secrets — never commit
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.jks
+secrets/
+credentials/
+
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
+
+# Runtime data and user uploads
+var/
+!var/.gitkeep
+*.log
+
+# Local databases and dumps
+*.sqlite3
+*.db
+dump.rdb
+appendonly.aof
+
+# Caches
+.cache/
+.parcel-cache/
+.turbo/
+.eslintcache
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Misc local
+.sudo_as_admin_successful
+.config/
+npm-debug.log*

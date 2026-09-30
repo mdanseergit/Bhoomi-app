@@ -1,0 +1,13 @@
+{
+  "version": "dev-baseline-0.1",
+  "note": "Development label set for the BHOOMI Crop Doctor heuristic baseline classifier. Not a clinically validated diagnostic model.",
+  "classes": [
+    {"id": "healthy", "display_name": "Healthy", "crops": ["rice", "wheat", "tomato", "cotton", "maize", "general"]},
+    {"id": "leaf_spot", "display_name": "Leaf spot", "crops": ["rice", "tomato", "general"]},
+    {"id": "blight", "display_name": "Blight", "crops": ["tomato", "potato", "general"]},
+    {"id": "rust", "display_name": "Rust", "crops": ["wheat", "maize", "general"]},
+    {"id": "powdery_mildew", "display_name": "Powdery mildew", "crops": ["cotton", "general"]},
+    {"id": "nutrient_deficiency", "display_name": "Possible nutrient deficiency", "crops": ["general"]},
+    {"id": "pest_damage", "display_name": "Possible pest damage", "crops": ["general"]}
+  ]
+}
