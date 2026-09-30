@@ -113,3 +113,46 @@ body {
 .logo-pulse {
   animation: logo-pulse 2s ease-in-out infinite;
 }
+
+/* ── Seamless Organic Moving Green Wave Animations ───────────────────── */
+@keyframes wave-drift-forward {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes wave-drift-reverse {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.animate-wave-slow {
+  animation: wave-drift-forward 28s linear infinite;
+  will-change: transform;
+}
+
+.animate-wave-reverse {
+  animation: wave-drift-reverse 20s linear infinite;
+  will-change: transform;
+}
+
+.animate-wave-fast {
+  animation: wave-drift-forward 14s linear infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-wave-slow,
+  .animate-wave-reverse,
+  .animate-wave-fast {
+    animation: none;
+  }
+}
+
