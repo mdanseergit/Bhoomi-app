@@ -3,10 +3,12 @@
 #
 # Usage:
 #   1. Push this repo to GitHub.
-#   2. In render.com → New → Blueprint → point to this repo.
-#   3. Fill in the environment group "bhoomi-env" values.
+#   2. In render.com -> New -> Blueprint -> point to this repo.
+#   3. Render prompts for the two values marked `sync: false`.
+#
+# Secrets are never stored in this file. It is committed to a public
+# repository, so any value placed here would be published.
 # ---------------------------------------------------------------------------
-
 services:
   - type: web
     name: bhoomi-api
@@ -15,25 +17,59 @@ services:
     dockerContext: apps/api
     region: oregon
     plan: starter
-    healthCheckPath: /
+    autoDeployTrigger: commit
+    # Liveness only, so a brief database blip does not restart the service
+    # and the check does not query the database on every interval.
+    healthCheckPath: /api/v1/live
     envVars:
       - key: APP_ENV
         value: production
       - key: DEBUG
         value: "false"
+      - key: LOG_LEVEL
+        value: INFO
+
+      # Secrets — Render prompts for these. Never commit real values.
       - key: JWT_SECRET_KEY
-        sync: false  # set manually in dashboard
+        sync: false
       - key: DATABASE_URL
-        sync: false  # set to your Supabase/Render PG connection string
+        sync: false
+
       - key: REDIS_URL
         fromService:
           type: redis
           name: bhoomi-redis
           property: connectionString
+
+      # The browser talks only to the Vercel origin. Must not contain
+      # localhost in production, or the API refuses to start.
       - key: CORS_ORIGINS
-        sync: false  # set to your Vercel frontend URL
+        value: https://web-plum-alpha-28.vercel.app
+
+      # Optional AI explanations. Leave unset and the deterministic
+      # agriculture rules explain every result instead.
       - key: NVIDIA_API_KEY
         sync: false
+
+      # Data sources. "none" means the feature reports itself unavailable
+      # rather than returning a value with nothing behind it.
+      - key: SATELLITE_PROVIDER
+        value: none
+      - key: DISEASE_MODEL_PROVIDER
+        value: none
+      - key: WEATHER_FALLBACK_PROVIDER
+        value: none
+
+      - key: STORAGE_BACKEND
+        value: local
+      - key: STORAGE_LOCAL_PATH
+        value: ./var/uploads
+      - key: MAX_UPLOAD_SIZE_MB
+        value: "8"
+
+      # Single worker on the starter plan keeps migrations from racing.
+      - key: WEB_CONCURRENCY
+        value: "1"
       - key: PORT
         value: "8000"
 
