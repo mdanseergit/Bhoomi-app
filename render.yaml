@@ -1,0 +1,44 @@
+# ---------------------------------------------------------------------------
+# render.yaml — Render deployment blueprint for BHOOMI
+#
+# Usage:
+#   1. Push this repo to GitHub.
+#   2. In render.com → New → Blueprint → point to this repo.
+#   3. Fill in the environment group "bhoomi-env" values.
+# ---------------------------------------------------------------------------
+
+services:
+  - type: web
+    name: bhoomi-api
+    runtime: docker
+    dockerfilePath: apps/api/Dockerfile
+    dockerContext: apps/api
+    region: oregon
+    plan: starter
+    healthCheckPath: /
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: JWT_SECRET_KEY
+        sync: false  # set manually in dashboard
+      - key: DATABASE_URL
+        sync: false  # set to your Supabase/Render PG connection string
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: bhoomi-redis
+          property: connectionString
+      - key: CORS_ORIGINS
+        sync: false  # set to your Vercel frontend URL
+      - key: NVIDIA_API_KEY
+        sync: false
+      - key: PORT
+        value: "8000"
+
+  - type: redis
+    name: bhoomi-redis
+    plan: starter
+    region: oregon
+    maxmemoryPolicy: allkeys-lru

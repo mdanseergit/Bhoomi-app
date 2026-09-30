@@ -17,6 +17,7 @@ import { MetricCard } from "@/components/MetricCard";
 import { StatusBadge } from "@/components/StatusBadge";
 import { EmptyState } from "@/components/EmptyState";
 import { ErrorState } from "@/components/ErrorState";
+import { CardSkeleton } from "@/components/LoadingSkeleton";
 import { WavyGreenHero } from "@/components/WavyGreenHero";
 import { WaterIntelligenceCard } from "@/components/WaterIntelligenceCard";
 import { FarmTimelineView } from "@/components/FarmTimelineView";
@@ -71,15 +72,26 @@ export default function OverviewPage() {
 
   if (farms.length === 0) {
     return (
-      <EmptyState
-        title="No farms yet"
-        description="Create your first farm to start seeing weather, soil, vegetation and health intelligence in one place."
-        action={
-          <Link href="/farms" className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-deep">
-            Create a farm
-          </Link>
-        }
-      />
+      <div className="mx-auto max-w-5xl space-y-6">
+        <WavyGreenHero
+          greeting={greeting}
+          userName={user?.full_name}
+          role={user?.role ? titleCase(user.role) : "Farmer"}
+          selectedFarm={null}
+          farms={[]}
+          selectedFarmId={null}
+          onSelectFarm={() => {}}
+        />
+        <EmptyState
+          title="No farms yet"
+          description="Create your first farm to start seeing weather, soil, vegetation and health intelligence in one place."
+          action={
+            <Link href="/farms" className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-primary-deep">
+              Create a farm
+            </Link>
+          }
+        />
+      </div>
     );
   }
 

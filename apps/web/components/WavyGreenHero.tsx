@@ -11,7 +11,7 @@ interface WavyGreenHeroProps {
   role?: string;
   selectedFarm?: Farm | null;
   farms: Farm[];
-  selectedFarmId?: string;
+  selectedFarmId?: string | null;
   onSelectFarm: (id: string) => void;
   onRefresh?: () => void;
   isRefreshing?: boolean;
@@ -89,9 +89,8 @@ export function WavyGreenHero({
               <div className="rounded-lg bg-white/10 p-0.5 backdrop-blur-md">
                 <FarmSelector
                   farms={farms}
-                  selectedId={selectedFarmId}
+                  selectedId={selectedFarmId ?? null}
                   onSelect={onSelectFarm}
-                  className="border-white/20 bg-white/90 text-text-primary shadow-sm hover:bg-white"
                 />
               </div>
 

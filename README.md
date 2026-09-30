@@ -229,6 +229,44 @@ provider chain locally.
 └── docs/                   Data provider references
 ```
 
+## Deployment
+
+BHOOMI is designed for a simple production deployment:
+
+| Component | Platform | Config |
+| --- | --- | --- |
+| **Backend** | Render (Docker) | [`render.yaml`](render.yaml) |
+| **Frontend** | Vercel | [`apps/web/vercel.json`](apps/web/vercel.json) |
+| **Database** | Supabase PostgreSQL | With PostGIS + pgvector extensions |
+| **Redis** | Render Redis | Provisioned via render.yaml |
+
+### Deploy the backend (Render)
+
+1. Push this repo to GitHub
+2. In [Render](https://render.com) → **New → Blueprint** → select this repo
+3. Render reads `render.yaml` and provisions the API service and Redis
+4. Set the environment variables in the Render dashboard:
+   - `JWT_SECRET_KEY` — generate with `python -c "import secrets; print(secrets.token_urlsafe(48))"`
+   - `DATABASE_URL` — your Supabase PostgreSQL connection string
+   - `CORS_ORIGINS` — your Vercel frontend URL
+   - `NVIDIA_API_KEY` — optional, for AI explanations
+
+The startup script (`scripts/prod_start.sh`) automatically runs Alembic
+migrations before starting the server.
+
+### Deploy the frontend (Vercel)
+
+1. In [Vercel](https://vercel.com) → **Import Project** → select this repo
+2. Set the root directory to `apps/web`
+3. Set the environment variable:
+   - `BHOOMI_API_URL` — your Render backend URL (e.g. `https://bhoomi-api.onrender.com`)
+4. Deploy
+
+### Production environment templates
+
+- Backend: [`apps/api/.env.production.example`](apps/api/.env.production.example)
+- Frontend: [`apps/web/.env.production.example`](apps/web/.env.production.example)
+
 ## Documentation
 
 - [`docs/data-providers/`](docs/data-providers/) — provider coverage, field

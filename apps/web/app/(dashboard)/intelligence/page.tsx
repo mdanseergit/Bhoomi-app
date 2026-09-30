@@ -70,7 +70,22 @@ export default function IntelligencePage() {
   };
 
   if (farmsLoading) return <CardSkeleton />;
-  if (farms.length === 0) return <EmptyState title="No farms yet" description="Add a farm to see intelligence here." />;
+  if (farms.length === 0) {
+    return (
+      <div className="mx-auto max-w-5xl space-y-6">
+        <WavyGreenHero
+          greeting="Farm Intelligence & Diagnostics"
+          userName="Field Intelligence"
+          role="AI Analytics"
+          selectedFarm={null}
+          farms={[]}
+          selectedFarmId={null}
+          onSelectFarm={() => {}}
+        />
+        <EmptyState title="No farms yet" description="Add a farm to see intelligence here." />
+      </div>
+    );
+  }
 
   const reportText = data?.bhoomi_report || data?.ai_interpretation;
 

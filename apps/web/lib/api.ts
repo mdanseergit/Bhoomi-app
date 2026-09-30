@@ -89,7 +89,7 @@ export class NetworkError extends Error {
 }
 
 export const BACKEND_UNREACHABLE_MESSAGE =
-  "Cannot reach the BHOOMI API. Make sure the backend is running on http://localhost:8000 (see bhoomi/apps/api).";
+  "Cannot reach the BHOOMI API. The service may be temporarily unavailable — please try again in a moment.";
 
 function defaultMessageFor(status: number): string {
   if (status === 502 || status === 503 || status === 504) return BACKEND_UNREACHABLE_MESSAGE;
