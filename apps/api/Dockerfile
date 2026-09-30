@@ -38,16 +38,20 @@ USER bhoomi
 
 # Health check — hit the root endpoint.
 #
-# The start period must outlast "alembic upgrade head", which runs before the
-# server binds a port. On an empty database the initial schema (PostGIS
-# geometry columns plus a pgvector embedding column) can take well over a
-# minute. With the previous 10s period the container was marked unhealthy
-# during migration and restarted mid-migration, leaving a partially applied
-# schema behind.
-HEALTHCHECK --interval=30s --timeout=5s --start-period=240s --retries=3 \
-    CMD curl -f http://localhost:8000/ || exit 1
+# The port comes from $PORT rather than a literal: Cloud Run injects 8080,
+# Render injects 10000, and a hardcoded port silently reports unhealthy
+# everywhere except the one platform it was written on.
+#
+# The start period must outlast a cold start. With the previous 10s the
+# container was declared unhealthy while imports and the database pool
+# were still warming. Migrations no longer run here (see
+# scripts/run_migrations.sh), so this is startup time, not schema time.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+    CMD curl -f "http://localhost:${PORT:-8000}/" || exit 1
 
-EXPOSE 8000
+# Cloud Run expects the app on 8080. EXPOSE is documentation only and does
+# not change the listening port, which uvicorn takes from $PORT.
+EXPOSE 8080
 
 # The start script runs Alembic migrations then launches Uvicorn.
 CMD ["bash", "scripts/prod_start.sh"]

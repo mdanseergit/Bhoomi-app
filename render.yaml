@@ -75,6 +75,13 @@ services:
       - key: PORT
         value: "8000"
 
+      # Safe here only because a Render web service runs exactly one
+      # instance. An autoscaling platform would race several instances on
+      # the same schema, so this must stay false anywhere else and
+      # migrations must run as a separate step instead.
+      - key: RUN_MIGRATIONS
+        value: "true"
+
   - type: redis
     name: bhoomi-redis
     plan: starter
