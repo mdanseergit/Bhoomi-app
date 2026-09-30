@@ -36,8 +36,15 @@ RUN mkdir -p var/uploads && chown -R bhoomi:bhoomi /home/bhoomi/app
 
 USER bhoomi
 
-# Health check — hit the root endpoint
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+# Health check — hit the root endpoint.
+#
+# The start period must outlast "alembic upgrade head", which runs before the
+# server binds a port. On an empty database the initial schema (PostGIS
+# geometry columns plus a pgvector embedding column) can take well over a
+# minute. With the previous 10s period the container was marked unhealthy
+# during migration and restarted mid-migration, leaving a partially applied
+# schema behind.
+HEALTHCHECK --interval=30s --timeout=5s --start-period=240s --retries=3 \
     CMD curl -f http://localhost:8000/ || exit 1
 
 EXPOSE 8000
