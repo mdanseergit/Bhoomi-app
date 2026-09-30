@@ -58,22 +58,41 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center bg-background">
-      {/* ── Top Organic Wavy Green Section ───────────────────────────── */}
-      <div className="absolute inset-x-0 top-0 h-80 overflow-hidden bg-gradient-to-br from-[#102408] via-[#1b3810] to-[#2c5519] shadow-md">
-        {/* Ambient glow spots */}
-        <div className="pointer-events-none absolute -left-10 -top-10 h-72 w-72 rounded-full bg-emerald-500/20 blur-3xl" />
-        <div className="pointer-events-none absolute right-0 top-10 h-64 w-64 rounded-full bg-lime-400/15 blur-3xl" />
+    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-[#0F2208] via-[#1A370E] to-[#274E16] px-4 py-12">
+      {/* ── Seamless Ambient Organic Glow & Contour Waves ─────────────── */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        {/* Soft atmospheric blurred glowing orbs */}
+        <div className="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-emerald-500/20 blur-[100px]" />
+        <div className="absolute right-0 top-1/4 h-80 w-80 rounded-full bg-lime-400/15 blur-[100px]" />
+        <div className="absolute bottom-0 left-1/3 h-96 w-96 rounded-full bg-emerald-600/15 blur-[120px]" />
 
-        {/* Wavy bottom border */}
-        <div className="absolute inset-x-0 bottom-0 h-16 w-full leading-none">
-          <svg className="block h-full w-full" viewBox="0 0 1440 80" preserveAspectRatio="none">
-            <path
-              fill="#F4F7F1"
-              d="M0,32L60,42.7C120,53,240,75,360,74.7C480,75,600,53,720,42.7C840,32,960,32,1080,48C1200,64,1320,75,1380,80L1440,85L1440,80L0,80Z"
-            />
-          </svg>
-        </div>
+        {/* Subtle, soft organic wave contours that blend into the ambiance */}
+        <svg
+          className="absolute inset-0 h-full w-full opacity-15"
+          viewBox="0 0 1440 900"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path
+            fill="url(#wave-grad-1)"
+            d="M0,160L80,186.7C160,213,320,267,480,261.3C640,256,800,192,960,186.7C1120,181,1280,235,1360,261.3L1440,288L1440,900L1360,900C1280,900,1120,900,960,900C800,900,640,900,480,900C320,900,160,900,80,900L0,900Z"
+          />
+          <path
+            fill="url(#wave-grad-2)"
+            opacity="0.6"
+            d="M0,380L60,400C120,420,240,460,360,453.3C480,447,600,393,720,389.3C840,385,960,431,1080,442.7C1200,455,1320,433,1380,422.3L1440,411.7L1440,900L1380,900C1320,900,1200,900,1080,900C960,900,840,900,720,900C600,900,480,900,360,900C240,900,120,900,60,900L0,900Z"
+          />
+          <defs>
+            <linearGradient id="wave-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#4A7C2E" stopOpacity="0.4" />
+              <stop offset="100%" stopColor="#1E3A10" stopOpacity="0" />
+            </linearGradient>
+            <linearGradient id="wave-grad-2" x1="100%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#6FAE45" stopOpacity="0.3" />
+              <stop offset="100%" stopColor="#0F2208" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+        </svg>
       </div>
 
       {/* Language switcher in top-right corner */}

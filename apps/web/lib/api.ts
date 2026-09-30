@@ -91,6 +91,16 @@ export class NetworkError extends Error {
 export const BACKEND_UNREACHABLE_MESSAGE =
   "Cannot reach the BHOOMI API. The service may be temporarily unavailable — please try again in a moment.";
 
+export const TIMEOUT_MESSAGE =
+  "The BHOOMI API did not respond in time. It may be starting up or temporarily overloaded — please try again in a moment.";
+
+/**
+ * Bounds a single request so a stalled proxy cannot hold the UI in a loading
+ * state indefinitely. Generous enough to cover a cold start on a free-tier
+ * host, which can take close to a minute to accept its first connection.
+ */
+const DEFAULT_REQUEST_TIMEOUT_MS = 60_000;
+
 function defaultMessageFor(status: number): string {
   if (status === 502 || status === 503 || status === 504) return BACKEND_UNREACHABLE_MESSAGE;
   if (status === 429) return "Too many attempts. Please wait a minute and try again.";
@@ -116,7 +126,12 @@ async function refreshAccessToken(): Promise<string | null> {
   }
 }
 
-interface RequestOptions extends RequestInit {
+interface TimedRequestInit extends RequestInit {
+  /** Overrides the default request timeout for this call. */
+  timeoutMs?: number;
+}
+
+interface RequestOptions extends TimedRequestInit {
   skipAuth?: boolean;
 }
 
@@ -139,15 +154,27 @@ async function parseErrorBody(response: Response): Promise<{ message?: string; c
   }
 }
 
-async function request(path: string, init: RequestInit): Promise<Response> {
+async function request(path: string, init: TimedRequestInit): Promise<Response> {
+  const { timeoutMs = DEFAULT_REQUEST_TIMEOUT_MS, ...rest } = init;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    return await fetch(path, init);
-  } catch {
+    return await fetch(path, { ...rest, signal: controller.signal });
+  } catch (err) {
+    // A request that never settles must not leave a spinner running
+    // indefinitely, so an abort is reported distinctly from a refused
+    // connection.
+    if (err instanceof Error && err.name === "AbortError") {
+      throw new NetworkError(TIMEOUT_MESSAGE);
+    }
     throw new NetworkError(BACKEND_UNREACHABLE_MESSAGE);
+  } finally {
+    clearTimeout(timer);
   }
 }
 
 export async function apiFetch<T = unknown>(path: string, options: RequestOptions = {}): Promise<T> {
+  const { timeoutMs, ...init } = options;
   const isFormData = options.body instanceof FormData;
   const headers = new Headers(options.headers);
   if (!isFormData && !headers.has("Content-Type") && options.body) {
@@ -158,13 +185,13 @@ export async function apiFetch<T = unknown>(path: string, options: RequestOption
     headers.set("Authorization", `Bearer ${token}`);
   }
 
-  let response = await request(path, { ...options, headers });
+  let response = await request(path, { ...init, headers, timeoutMs });
 
   if (response.status === 401 && !options.skipAuth) {
     const newToken = await refreshAccessToken();
     if (newToken) {
       headers.set("Authorization", `Bearer ${newToken}`);
-      response = await request(path, { ...options, headers });
+      response = await request(path, { ...init, headers, timeoutMs });
     }
   }
 

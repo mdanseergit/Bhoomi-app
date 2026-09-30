@@ -44,14 +44,40 @@ export function WavyGreenHero({
     : "Select a farm to view live intelligence";
 
   return (
-    <div className="relative -mx-4 -mt-5 mb-8 overflow-hidden md:-mx-6">
-      {/* ── Top Rich Emerald Gradient Background ──────────────────────── */}
-      <div className="relative bg-gradient-to-br from-[#112409] via-[#1c3811] to-[#2b5418] px-5 pb-16 pt-7 text-white md:px-8 md:pb-20 md:pt-9 shadow-md">
-        {/* Decorative glowing ambient spots */}
-        <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-emerald-500/15 blur-3xl" />
-        <div className="pointer-events-none absolute right-10 top-0 h-72 w-72 rounded-full bg-lime-400/10 blur-3xl" />
+    <div className="relative mb-6 overflow-hidden rounded-2xl md:rounded-3xl border border-emerald-900/15 bg-gradient-to-br from-[#112509] via-[#1A3810] to-[#295117] p-6 md:p-8 text-white shadow-xl shadow-emerald-950/10 transition-all">
+      {/* Decorative glowing ambient spots that blend seamlessly */}
+      <div className="pointer-events-none absolute -left-20 -top-20 h-64 w-64 rounded-full bg-emerald-500/20 blur-3xl" />
+      <div className="pointer-events-none absolute right-10 top-0 h-72 w-72 rounded-full bg-lime-400/10 blur-3xl" />
+      <div className="pointer-events-none absolute bottom-0 right-1/4 h-52 w-52 rounded-full bg-emerald-400/10 blur-3xl" />
 
-        <div className="relative z-10 mx-auto max-w-5xl">
+      {/* Subtle organic topographic wave contours blending softly into the background */}
+      <svg
+        className="pointer-events-none absolute inset-0 h-full w-full opacity-15"
+        viewBox="0 0 1200 400"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path
+          fill="none"
+          stroke="rgba(255,255,255,0.25)"
+          strokeWidth="1.5"
+          d="M0,80 C300,160 600,0 900,100 C1050,150 1150,110 1200,90"
+        />
+        <path
+          fill="none"
+          stroke="rgba(110,174,69,0.3)"
+          strokeWidth="2"
+          d="M0,180 C250,90 550,240 850,160 C1000,120 1120,200 1200,170"
+        />
+        <path
+          fill="none"
+          stroke="rgba(163,230,53,0.2)"
+          strokeWidth="1.5"
+          d="M0,280 C350,330 650,210 950,280 C1080,310 1160,260 1200,240"
+        />
+      </svg>
+
+      <div className="relative z-10">
           {/* Header Row: Title & Actions */}
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -174,35 +200,6 @@ export function WavyGreenHero({
               </div>
             </div>
           )}
-        </div>
-      </div>
-
-      {/* ── Layered Wavy SVG Curve Transition ─────────────────────────── */}
-      <div className="relative -mt-10 h-10 w-full overflow-hidden leading-none md:-mt-12 md:h-12">
-        {/* Soft back wave */}
-        <svg
-          className="absolute inset-0 h-full w-full opacity-35"
-          viewBox="0 0 1440 80"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <path
-            fill="#2B5418"
-            d="M0,32L48,42.7C96,53,192,75,288,74.7C384,75,480,53,576,42.7C672,32,768,32,864,42.7C960,53,1056,75,1152,69.3C1248,64,1344,32,1392,16L1440,0L1440,80L1392,80C1344,80,1248,80,1152,80C1056,80,960,80,864,80C768,80,672,80,576,80C480,80,384,80,288,80C192,80,96,80,48,80L0,80Z"
-          />
-        </svg>
-        {/* Main foreground wave matching body bg #F4F7F1 */}
-        <svg
-          className="relative block h-full w-full"
-          viewBox="0 0 1440 80"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <path
-            fill="#F4F7F1"
-            d="M0,24L48,29.3C96,35,192,45,288,53.3C384,61,480,67,576,58.7C672,51,768,29,864,24C960,19,1056,29,1152,37.3C1248,45,1344,51,1392,53.3L1440,56L1440,80L1392,80C1344,80,1248,80,1152,80C1056,80,960,80,864,80C768,80,672,80,576,80C480,80,384,80,288,80C192,80,96,80,48,80L0,80Z"
-          />
-        </svg>
       </div>
     </div>
   );
