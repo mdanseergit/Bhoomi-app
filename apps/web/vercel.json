@@ -4,7 +4,6 @@
   "buildCommand": "npm run build",
   "installCommand": "npm install",
   "outputDirectory": ".next",
-  "//rewrites": "Intentionally absent. Vercel applies vercel.json rewrites before Next.js, and it does not expand environment variables in destinations, so a ${BHOOMI_API_URL} rewrite would send /api/* to a literal unresolved URL. The proxy is defined in next.config.mjs instead, where process.env is read correctly.",
   "headers": [
     {
       "source": "/(.*)",
