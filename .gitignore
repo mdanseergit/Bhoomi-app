@@ -65,3 +65,11 @@ desktop.ini
 .sudo_as_admin_successful
 .config/
 npm-debug.log*
+
+# Scratch files from redirecting command output to a file
+a.txt
+b.txt
+out.txt
+t.txt
+u.txt
+v.txt

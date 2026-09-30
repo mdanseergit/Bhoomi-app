@@ -121,13 +121,30 @@ involved.
 
 ## 3. Match CORS_ORIGINS to the Vercel domain
 
-`CORS_ORIGINS` is set in `render.yaml` to the current Vercel origin. If your
-Vercel domain differs, update it there and redeploy, or set it directly in the
-Render dashboard. Use the exact origin with no trailing slash and no path.
+`CORS_ORIGINS` is set in `render.yaml` to the origin that serves the frontend,
+currently `https://bhoomi-app-in.vercel.app`. List every origin that serves it,
+comma-separated, since a Vercel project and its preview deployments are
+different origins. A browser request from an origin that is missing from this
+list is blocked before it reaches a handler, which presents as a sign-in that
+never completes.
 
 The API refuses to start if `CORS_ORIGINS` contains `localhost` while
 `APP_ENV=production`, since that would indicate development configuration
 reaching a public deployment.
+
+## Keeping the API running
+
+A suspended service answers every request with `503` and the header
+`x-render-routing: suspend-by-user`, which the Vercel proxy surfaces to the
+browser as `502 Bad Gateway`. The frontend then reports the backend as
+unreachable. This is a service state, not a configuration error, and it does not
+resolve on its own: resume `bhoomi-api` in the Render dashboard.
+
+On the free plan, Render also suspends a service after a period of inactivity.
+The first request after that takes roughly a minute while the instance starts,
+and it is not warm enough to serve a page load, which issues several requests at
+once. The frontend bounds a single request at 60 seconds for this reason and
+reports a timeout distinctly from a refused connection.
 
 ## Configuration reference
 
@@ -171,9 +188,12 @@ consultation.
 
 | Symptom | Likely cause |
 | --- | --- |
+| Sign-in sits on "Signing in", then fails | The API is suspended or unreachable. Check `bhoomi-api` in Render. |
+| `503` with `x-render-routing: suspend-by-user` | The Render service is suspended and must be resumed. |
+| Browser console shows a CORS error | The origin is missing from `CORS_ORIGINS`. |
 | Build fails during `e9219b1cbd09` | `postgis` or `vector` not enabled on the database. |
 | `RuntimeError` at startup | The message names each configuration problem. |
 | `CORS_ORIGINS must not contain localhost` | A development origin reached production settings. |
 | Migrations fail on a pooled connection | Use a direct or session-mode connection string. |
-| Frontend loads, API calls fail with 401 | `CORS_ORIGINS` does not match the browser origin. |
+| First request after an idle period is slow | The free plan was suspended and is starting up. |
 | Crop Doctor returns 503 | Expected while `DISEASE_MODEL_PROVIDER=none`. |

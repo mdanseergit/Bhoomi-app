@@ -42,9 +42,11 @@ services:
           property: connectionString
 
       # The browser talks only to the Vercel origin. Must not contain
-      # localhost in production, or the API refuses to start.
+      # localhost in production, or the API refuses to start. List every
+      # origin that serves the frontend; a browser request from an origin
+      # absent here is blocked, so a stale value here breaks sign-in.
       - key: CORS_ORIGINS
-        value: https://web-plum-alpha-28.vercel.app
+        value: https://bhoomi-app-in.vercel.app
 
       # Optional AI explanations. Leave unset and the deterministic
       # agriculture rules explain every result instead.
