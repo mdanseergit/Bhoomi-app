@@ -58,41 +58,66 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-[#0F2208] via-[#1A370E] to-[#274E16] px-4 py-12">
-      {/* ── Seamless Ambient Organic Glow & Contour Waves ─────────────── */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        {/* Soft atmospheric blurred glowing orbs */}
-        <div className="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-emerald-500/20 blur-[100px]" />
-        <div className="absolute right-0 top-1/4 h-80 w-80 rounded-full bg-lime-400/15 blur-[100px]" />
-        <div className="absolute bottom-0 left-1/3 h-96 w-96 rounded-full bg-emerald-600/15 blur-[120px]" />
+    <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-[#EEF5E9] via-[#F8FAF6] to-[#FFFFFF] px-4 py-12">
+      {/* ── Organic Wavy Green Layers with White Gradient Transition ──────── */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[560px] overflow-hidden">
+        {/* Soft glowing ambient spots */}
+        <div className="absolute -left-20 -top-20 h-80 w-80 rounded-full bg-emerald-400/25 blur-3xl" />
+        <div className="absolute right-0 top-10 h-72 w-72 rounded-full bg-lime-300/25 blur-3xl" />
 
-        {/* Subtle, soft organic wave contours that blend into the ambiance */}
+        {/* Sweeping Layered Organic Waves blending into white */}
         <svg
-          className="absolute inset-0 h-full w-full opacity-15"
-          viewBox="0 0 1440 900"
+          className="absolute inset-0 h-full w-full"
+          viewBox="0 0 1440 560"
           preserveAspectRatio="none"
           aria-hidden="true"
         >
-          <path
-            fill="url(#wave-grad-1)"
-            d="M0,160L80,186.7C160,213,320,267,480,261.3C640,256,800,192,960,186.7C1120,181,1280,235,1360,261.3L1440,288L1440,900L1360,900C1280,900,1120,900,960,900C800,900,640,900,480,900C320,900,160,900,80,900L0,900Z"
-          />
-          <path
-            fill="url(#wave-grad-2)"
-            opacity="0.6"
-            d="M0,380L60,400C120,420,240,460,360,453.3C480,447,600,393,720,389.3C840,385,960,431,1080,442.7C1200,455,1320,433,1380,422.3L1440,411.7L1440,900L1380,900C1320,900,1200,900,1080,900C960,900,840,900,720,900C600,900,480,900,360,900C240,900,120,900,60,900L0,900Z"
-          />
           <defs>
-            <linearGradient id="wave-grad-1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#4A7C2E" stopOpacity="0.4" />
-              <stop offset="100%" stopColor="#1E3A10" stopOpacity="0" />
+            {/* Deep rich wave gradient fading down to transparent white */}
+            <linearGradient id="wave-green-deep" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#1B3E12" stopOpacity="0.95" />
+              <stop offset="45%" stopColor="#2D5A1A" stopOpacity="0.8" />
+              <stop offset="80%" stopColor="#4D7F31" stopOpacity="0.35" />
+              <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
             </linearGradient>
-            <linearGradient id="wave-grad-2" x1="100%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stopColor="#6FAE45" stopOpacity="0.3" />
-              <stop offset="100%" stopColor="#0F2208" stopOpacity="0" />
+
+            {/* Vibrant mid wave gradient fading to soft white */}
+            <linearGradient id="wave-green-mid" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#2A5418" stopOpacity="0.75" />
+              <stop offset="45%" stopColor="#5B933C" stopOpacity="0.55" />
+              <stop offset="80%" stopColor="#8CCB67" stopOpacity="0.2" />
+              <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
+            </linearGradient>
+
+            {/* Soft accent wave */}
+            <linearGradient id="wave-green-soft" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#78B852" stopOpacity="0.4" />
+              <stop offset="60%" stopColor="#B3E293" stopOpacity="0.18" />
+              <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0" />
             </linearGradient>
           </defs>
+
+          {/* Layer 1: Back Wave */}
+          <path
+            fill="url(#wave-green-soft)"
+            d="M0,0 L1440,0 L1440,340 C1300,400 1150,280 980,330 C800,380 620,460 450,420 C280,380 120,450 0,410 Z"
+          />
+
+          {/* Layer 2: Mid Wave */}
+          <path
+            fill="url(#wave-green-mid)"
+            d="M0,0 L1440,0 L1440,280 C1280,340 1100,250 920,290 C740,330 560,270 380,310 C200,350 80,290 0,310 Z"
+          />
+
+          {/* Layer 3: Foreground Main Rich Wave fading smoothly into white */}
+          <path
+            fill="url(#wave-green-deep)"
+            d="M0,0 L1440,0 L1440,210 C1320,250 1160,190 1000,230 C820,275 650,205 480,240 C300,280 140,220 0,240 Z"
+          />
         </svg>
+
+        {/* Smooth mask to ensure complete seamless fade into white gradient */}
+        <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-white via-white/80 to-transparent" />
       </div>
 
       {/* Language switcher in top-right corner */}
@@ -103,17 +128,17 @@ export default function LoginPage() {
       <div className="relative z-10 w-full max-w-sm px-4 py-8 animate-fade-in-up">
         {/* ── Centered Logo ─────────────────────────────────────────── */}
         <div className="mb-6 flex flex-col items-center gap-3">
-          <div className="rounded-2xl bg-white/10 p-2 shadow-lg backdrop-blur-md border border-white/20">
-            <BhoomiLogo size={76} />
+          <div className="rounded-2xl bg-white/90 p-2.5 shadow-lg backdrop-blur-md border border-emerald-900/10">
+            <BhoomiLogo size={72} />
           </div>
-          <div className="text-center text-white">
-            <h1 className="text-2xl font-bold tracking-tight text-white drop-shadow-sm">{t("appName")}</h1>
-            <p className="mt-1 text-xs font-medium text-emerald-200">{t("appTagline")}</p>
+          <div className="text-center">
+            <h1 className="text-2xl font-bold tracking-tight text-white drop-shadow-md sm:text-3xl">{t("appName")}</h1>
+            <p className="mt-1 text-xs font-medium text-emerald-100 drop-shadow-sm sm:text-sm">{t("appTagline")}</p>
           </div>
         </div>
 
         {/* ── Sign in card ──────────────────────────────────────────── */}
-        <div className="rounded-2xl border border-emerald-900/10 bg-surface p-8 shadow-xl backdrop-blur-sm">
+        <div className="rounded-2xl border border-emerald-900/10 bg-white/95 p-8 shadow-2xl shadow-emerald-950/10 backdrop-blur-md">
           <h2 className="text-section-title text-text-primary">{t("signIn")}</h2>
           <form className="mt-4 space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
             <div>
