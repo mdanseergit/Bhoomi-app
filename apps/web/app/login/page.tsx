@@ -42,8 +42,8 @@ export default function LoginPage() {
         setBackendDown(true);
         setServerError(err.message);
       } else if (err instanceof ApiError) {
-        // 5xx from the dev proxy means the backend did not answer at all.
-        if (err.status >= 500) {
+        // 5xx or 404 from the proxy means the backend did not answer at all.
+        if (err.status >= 500 || err.status === 404 || err.message === BACKEND_UNREACHABLE_MESSAGE) {
           setBackendDown(true);
           setServerError(BACKEND_UNREACHABLE_MESSAGE);
         } else {

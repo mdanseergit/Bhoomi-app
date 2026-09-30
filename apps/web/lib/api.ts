@@ -130,9 +130,11 @@ async function parseErrorBody(response: Response): Promise<{ message?: string; c
       code: body?.error?.code,
     };
   } catch {
-    // Not JSON. The Next.js dev proxy answers with a bare "Internal Server
-    // Error" / "Bad Gateway" when the backend is unreachable, so surface that
-    // status directly rather than a generic failure.
+    // If an HTML error page is returned (e.g. Next.js 404 or cloud gateway 502/503),
+    // surface a clear backend unreachable message instead of raw HTML markup.
+    if (text.trim().startsWith("<") || response.status === 404 || response.status >= 500) {
+      return { message: BACKEND_UNREACHABLE_MESSAGE };
+    }
     return { message: text.trim().slice(0, 200) };
   }
 }
