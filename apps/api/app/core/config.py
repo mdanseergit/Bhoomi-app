@@ -130,6 +130,28 @@ class Settings(BaseSettings):
     def is_production(self) -> bool:
         return self.APP_ENV.lower() in ("production", "prod")
 
+    @property
+    def sqlalchemy_database_url(self) -> str:
+        """DATABASE_URL with an explicit driver.
+
+        The project depends on psycopg 3 (psycopg[binary]), not psycopg2, but
+        SQLAlchemy falls back to psycopg2 when a postgresql:// URL carries no
+        driver marker. That raises ModuleNotFoundError on the first engine
+        creation, which is at import time, so the app dies before serving a
+        request. Pinning "+psycopg" makes any provider-supplied URL work
+        without the deployer having to know this.
+        """
+        url = self.DATABASE_URL.strip()
+        if not url:
+            return url
+        # Already carries an explicit driver, e.g. postgresql+psycopg://.
+        if url.startswith("postgresql+") or url.startswith("postgres+"):
+            return url
+        for scheme in ("postgresql://", "postgres://"):
+            if url.startswith(scheme):
+                return "postgresql+psycopg://" + url[len(scheme):]
+        return url
+
     def validate_for_startup(self) -> List[str]:
         """Returns a list of fatal configuration problems. Empty means safe."""
         problems: List[str] = []

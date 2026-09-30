@@ -8,7 +8,10 @@ from app.core.database import Base
 from app import models  # noqa: F401  ensures all models are registered on Base.metadata
 
 config = context.config
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+# Use the normalised URL, not the raw setting. A plain "postgresql://" string
+# makes SQLAlchemy reach for psycopg2, which this project does not install, so
+# migrations would fail on ModuleNotFoundError before running a single one.
+config.set_main_option("sqlalchemy.url", settings.sqlalchemy_database_url)
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
