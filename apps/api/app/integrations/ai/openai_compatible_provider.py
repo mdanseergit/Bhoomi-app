@@ -63,6 +63,9 @@ class OpenAICompatibleProvider(AIProvider):
             for attempt in range(1, self.max_attempts + 1):
                 try:
                     resp = client.post(f"{self.base_url}/chat/completions", json=payload, headers=headers)
+                except httpx.TimeoutException as exc:
+                    logger.warning("ai_provider_timeout", provider=self.name, model=self.model, timeout=self.timeout)
+                    raise AIProviderError(f"{self.name} timed out after {self.timeout}s") from exc
                 except httpx.HTTPError as exc:
                     last_error = str(exc)
                     if attempt < self.max_attempts:
