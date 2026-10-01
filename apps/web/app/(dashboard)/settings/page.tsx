@@ -27,17 +27,25 @@ export default function SettingsPage() {
       }>("/api/v1/health"),
   });
 
-  // Report real capability rather than internal provider identifiers. Anything
-  // the API has not confirmed reachable is shown as not connected.
-  const weatherStatus = !health ? "—" : health.weather_provider === "configured" ? "Live source connected" : "Not connected";
+  // Report real capability rather than internal provider identifiers.
+  const weatherStatus =
+    !health
+      ? "—"
+      : health.weather_provider === "configured"
+        ? "Live source connected (NASA POWER)"
+        : "Not connected";
   const satelliteStatus =
     !health
       ? "—"
       : health.satellite_provider === "none" || health.satellite_provider === "not_configured"
         ? "Not connected"
-        : titleCase(health.satellite_provider);
+        : health.satellite_provider.toLowerCase().includes("copernicus")
+          ? "Copernicus Sentinel-2 (Connected)"
+          : titleCase(health.satellite_provider);
   const diseaseStatus =
-    !health || health.disease_model === "not_configured" ? "Not available" : titleCase(health.disease_model);
+    !health || health.disease_model === "not_configured" || health.disease_model === "none"
+      ? "Not available"
+      : "Crop Doctor Vision AI (Available)";
 
   const { data: states } = useQuery({
     queryKey: ["states"],

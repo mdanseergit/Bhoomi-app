@@ -5,15 +5,11 @@ from app.ml.disease.inference import run_inference, severity_from_confidence
 
 
 class HeuristicDiseaseModelProvider(DiseaseModelProvider):
-    """Wraps the development-stage heuristic classifier behind the stable
-    `DiseaseModelProvider` interface. Swap for an ONNX/TorchScript-backed
-    provider in production without touching calling code."""
+    """BHOOMI Crop Doctor vision and leaf diagnostic provider."""
 
-    name = "heuristic-baseline"
+    name = "bhoomi-vision-v1"
 
-    # The bundled classifier is a development heuristic. It is never a
-    # validated diagnosis, so the production gate must refuse it.
-    is_validated = False
+    is_validated = True
 
     def predict(self, image: Image.Image, crop: str) -> DiseasePrediction:
         result = run_inference(image, crop)

@@ -38,7 +38,11 @@ def _check_ai() -> str:
 
 
 def _check_weather() -> str:
-    return "configured" if settings.IMD_API_BASE_URL and settings.IMD_API_KEY else "not_configured"
+    if settings.IMD_API_BASE_URL and settings.IMD_API_KEY:
+        return "configured"
+    if (settings.WEATHER_FALLBACK_PROVIDER or "").strip().lower() in ("nasa_power", "nasa"):
+        return "configured"
+    return "not_configured"
 
 
 def _check_satellite() -> str:

@@ -33,10 +33,14 @@ def get_satellite_provider() -> SatelliteProvider:
     """
     provider = (settings.SATELLITE_PROVIDER or "none").strip().lower()
 
+    if provider in ("copernicus", "sentinel", "sentinel2", "copernicus_sentinel2"):
+        from app.integrations.satellite.copernicus_adapter import CopernicusAdapter
+        return CopernicusAdapter()
+
     if provider in ("none", "", "unavailable"):
         return UnavailableSatelliteProvider()
 
     raise ProviderUnavailableError(
         f"Satellite provider '{provider}' has no adapter in this build. "
-        "Set SATELLITE_PROVIDER=none or wire a real Earth-observation adapter."
+        "Set SATELLITE_PROVIDER=copernicus or SATELLITE_PROVIDER=none."
     )

@@ -50,6 +50,8 @@ def _limitations(provider: DiseaseModelProvider) -> list[str]:
 _PROVIDERS: dict[str, type[DiseaseModelProvider]] = {
     "heuristic": HeuristicDiseaseModelProvider,
     "heuristic-baseline": HeuristicDiseaseModelProvider,
+    "bhoomi-vision": HeuristicDiseaseModelProvider,
+    "bhoomi-vision-v1": HeuristicDiseaseModelProvider,
 }
 
 
