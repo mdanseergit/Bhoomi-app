@@ -5,6 +5,7 @@ import { AuthProvider } from "@/lib/auth-context";
 import { I18nProvider } from "@/lib/i18n-context";
 import { GlobalErrorListener } from "@/components/GlobalErrorListener";
 import { HtmlLangSetter } from "@/components/HtmlLangSetter";
+import { AgentChatBar } from "@/components/AgentChatBar";
 
 export const metadata: Metadata = {
   title: "BHOOMI — Agriculture Intelligence Platform",
@@ -23,7 +24,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <I18nProvider>
           <HtmlLangSetter />
           <QueryProvider>
-            <AuthProvider>{children}</AuthProvider>
+            <AuthProvider>
+              {children}
+              {/* Auth-aware, so it renders nothing until someone signs in. */}
+              <AgentChatBar />
+            </AuthProvider>
           </QueryProvider>
         </I18nProvider>
       </body>

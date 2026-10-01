@@ -36,12 +36,13 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
 
     CORS_ORIGINS: str = Field(default="http://localhost:3000")
+    CORS_ALLOWED_ORIGINS: Optional[str] = None
 
     # --- Database --------------------------------------------------------
     DATABASE_URL: str = Field(default="")
 
     # --- Redis / Jobs ------------------------------------------------------
-    REDIS_URL: str = Field(default="")
+    REDIS_URL: Optional[str] = Field(default="")
 
     # --- AI Providers --------------------------------------------------------
     NVIDIA_API_KEY: Optional[str] = None
@@ -63,6 +64,22 @@ class Settings(BaseSettings):
 
     EMBEDDING_PROVIDER: str = "deterministic"  # nvidia | openai | deterministic
     EMBEDDING_DIM: int = 384
+
+    # --- Agent Runtime ------------------------------------------------------
+    # Hard caps on a single agent run. The loop must stop and report rather
+    # than continue spending on a task that is no longer converging.
+    # The loop has a fixed 9-phase spine (observe -> ... -> notify) and every
+    # phase is persisted as an audit row, so the ceiling must exceed the spine
+    # or no run could finish recording itself. 12 leaves room for the planner to
+    # add one extra reasoning iteration beyond the minimum.
+    MAX_AGENT_STEPS: int = 12
+    MAX_AGENT_TOOL_CALLS: int = 24
+    MAX_AGENT_TASK_SECONDS: int = 120
+    AGENT_REPETITION_LIMIT: int = 3
+    AGENT_MAX_COST_PER_TASK: float = 0.50
+    AGENT_SESSION_TTL_HOURS: int = 24
+    # Steps that perform a write and therefore must stop for human approval.
+    AGENT_HIGH_RISK_APPROVAL_REQUIRED: bool = True
 
     # --- Weather -----------------------------------------------------------
     IMD_API_BASE_URL: Optional[str] = None
@@ -104,7 +121,8 @@ class Settings(BaseSettings):
 
     @property
     def cors_origin_list(self) -> List[str]:
-        return [o.strip() for o in self.CORS_ORIGINS.split(",") if o.strip()]
+        raw = self.CORS_ALLOWED_ORIGINS if self.CORS_ALLOWED_ORIGINS is not None else self.CORS_ORIGINS
+        return [o.strip() for o in raw.split(",") if o.strip()]
 
     @property
     def ai_provider_order_list(self) -> List[str]:
@@ -161,13 +179,12 @@ class Settings(BaseSettings):
             problems.append("JWT_SECRET_KEY must be at least 32 characters in production.")
         if not self.DATABASE_URL:
             problems.append("DATABASE_URL is required.")
-        if not self.REDIS_URL:
-            problems.append("REDIS_URL is required.")
         if self.is_production:
             if self.DEBUG:
                 problems.append("DEBUG must be false in production.")
-            if self.APP_ENV.lower() == "production" and "localhost" in self.CORS_ORIGINS:
-                problems.append("CORS_ORIGINS must not contain localhost in production.")
+            cors_raw = self.CORS_ALLOWED_ORIGINS if self.CORS_ALLOWED_ORIGINS is not None else self.CORS_ORIGINS
+            if self.APP_ENV.lower() == "production" and "localhost" in cors_raw:
+                problems.append("CORS_ALLOWED_ORIGINS must not contain localhost in production.")
             satellite = (self.SATELLITE_PROVIDER or "none").strip().lower()
             if satellite in ("seeded_dev", "dev_seed", "simulated", "mock", "fake"):
                 problems.append(

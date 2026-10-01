@@ -89,10 +89,10 @@ export class NetworkError extends Error {
 }
 
 export const BACKEND_UNREACHABLE_MESSAGE =
-  "Cannot reach the BHOOMI API. The service may be temporarily unavailable — please try again in a moment.";
+  "Connecting to BHOOMI... The service may be starting up — please wait a moment.";
 
 export const TIMEOUT_MESSAGE =
-  "The BHOOMI API did not respond in time. It may be starting up or temporarily overloaded — please try again in a moment.";
+  "Starting BHOOMI services... The backend did not respond in time — please try again in a moment.";
 
 /**
  * Bounds a single request so a stalled proxy cannot hold the UI in a loading
@@ -125,8 +125,21 @@ function isIdempotentRead(init: TimedRequestInit): boolean {
 function defaultMessageFor(status: number): string {
   if (status === 502 || status === 503 || status === 504) return BACKEND_UNREACHABLE_MESSAGE;
   if (status === 429) return "Too many attempts. Please wait a minute and try again.";
-  if (status >= 500) return `The server had a problem (HTTP ${status}). Please try again.`;
+  if (status >= 500) return "Connecting to BHOOMI... The service may be starting up. Please try again in a moment.";
   return `Request failed (HTTP ${status}).`;
+}
+
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "").replace(/\/+$/, "");
+
+function resolveUrl(path: string): string {
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+  if (API_BASE_URL) {
+    const cleanPath = path.startsWith("/") ? path : `/${path}`;
+    return `${API_BASE_URL}${cleanPath}`;
+  }
+  return path;
 }
 
 async function refreshAccessToken(): Promise<string | null> {
@@ -180,7 +193,8 @@ async function request(path: string, init: TimedRequestInit): Promise<Response> 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    return await fetch(path, { ...rest, signal: controller.signal });
+    const url = resolveUrl(path);
+    return await fetch(url, { ...rest, signal: controller.signal });
   } catch (err) {
     // A request that never settles must not leave a spinner running
     // indefinitely, so an abort is reported distinctly from a refused

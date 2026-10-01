@@ -1,5 +1,5 @@
 /** @type {import('next').NextConfig} */
-const API_PROXY_TARGET = process.env.BHOOMI_API_URL || "http://localhost:8000";
+const API_PROXY_TARGET = process.env.NEXT_PUBLIC_API_URL || process.env.BHOOMI_API_URL || "http://localhost:8000";
 
 const nextConfig = {
   reactStrictMode: true,

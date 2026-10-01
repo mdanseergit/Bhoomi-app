@@ -27,6 +27,7 @@ shapely==2.0.6
 
 # --- Cache, queue, and background work ---
 redis==5.0.8
+fakeredis==2.26.1
 celery==5.4.0
 tenacity==9.0.0
 
